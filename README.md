@@ -1,5 +1,5 @@
 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-align: center;">
-  <div style="height: 50%;"></div>
+  <div style="height: 50%; center;"></div>
   <h1>🌀 Implementação de soluções 🌀</h1>
   <h3>⚙️  Rotinas e relatórios  📋</h3>
   <div style="flex-grow: ;"></div> 
