@@ -1,0 +1,14 @@
+--MARK 2.1( projeto para trazer o valor das parcelas em aberto referente a nota e a parcela consultada)
+select 
+     case when (select count(*) from PCLANC where HISTORICO = '48790') <> (select count(*) from VW_COMISSAO_AGENCIADA where NUMNOTA = '48790') then VW_COMISSAO_AGENCIADA.VALOR
+     else 0
+end STSAS
+from PCLANC
+join VW_COMISSAO_AGENCIADA on PCLANC.HISTORICO = VW_COMISSAO_AGENCIADA.NUMNOTA
+where 
+    (PCLANC.VALOR >= 0 or PCLANC.VPAGO >= 0) 
+    and (PCLANC.DTDESD is null or PCLANC.DTASSINATURA is not null) 
+    and PCLANC.HISTORICO = '48790' 
+    and PCLANC.CODFORNEC = '460'
+    and VW_COMISSAO_AGENCIADA.PREST ='3'
+    fetch first 1 rows only;
