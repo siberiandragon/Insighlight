@@ -1,0 +1,24 @@
+--MARK 4 (alteração para considerar a situação da quitação da nota de venda, mas não da comissão. aguardando possiveis retornos de novas situações)
+select 
+    case
+        when count(*) = 0 then 'EM ABERTO'
+        when (select count(*) from PCLANC where HISTORICO = '85194') <> (select count(*) from VW_COMISSAO_AGENCIADA where NUMNOTA = '85194') and EXISTS (select 1 from PCLANC where HISTORICO = '85194') then 'PAGO PARCIALMENTE'
+        when (select count(*) from PCLANC where HISTORICO = '85194' and PCLANC.VPAGOBORDERO is not null and PCLANC.DTASSINATURA is not null) = 1 then 'PAGO'
+        when (select count(*) from VW_COMISSAO_AGENCIADA where NUMNOTA = '85194' and (VPAGO is null or VPAGO = 0)) = (select count(*) from VW_COMISSAO_AGENCIADA where NUMNOTA = '85194') then 'EM ABERTO'
+        when sum(case when PCLANC.VPAGOBORDERO is null and PCLANC.DTASSINATURA is null then 1 else 0 end) = count(*) then 'EM ABERTO' 
+        else 'EM ABERTO' 
+   end as EM_ABERTO
+from 
+    PCLANC
+where 
+    (PCLANC.VALOR >= 0 or PCLANC.VPAGO >= 0) 
+    or
+    (PCLANC.DTDESD is null or PCLANC.DTASSINATURA is not null) 
+    and 
+    PCLANC.HISTORICO = '85194' 
+    or
+    PCLANC.CODFORNEC = '145'
+    group by 
+    PCLANC.HISTORICO
+    fetch first 1 rows only
+;
